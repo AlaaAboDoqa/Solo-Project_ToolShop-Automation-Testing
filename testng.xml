@@ -1,0 +1,27 @@
+<suite name="ToolShop Automation Suite" verbose="1">
+
+	<test name="Authentication Tests">
+		<classes>
+			<class name="com.toolshop.tests.AuthenticationTest">
+				<methods>
+					<include name="testSuccessfulLogin" />
+					<include name="testLoginWithWrongPassword" />
+					<include name="testLoginWithInvalidEmail" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="Search and Navigation Tests">
+		<classes>
+			<class name="com.toolshop.tests.SearchTest">
+				<methods>
+					<include name="verifyProductSearchExecution" />
+					<include name="verifyHandToolsCategoryNavigation" />
+					<include name="verifyPowerToolsCategoryNavigation" />
+					<include name="verifyHomeNavigationFromCategoryPage" />
+				</methods>
+			</class>
+		</classes>
+	</test>
+</suite>
