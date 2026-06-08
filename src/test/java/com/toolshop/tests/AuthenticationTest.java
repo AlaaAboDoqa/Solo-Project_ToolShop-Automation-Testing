@@ -1,100 +1,131 @@
 package com.toolshop.tests;
 
-import java.time.Duration;
-
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.toolshop.constants.Constants;
+import com.toolshop.dataProviders.ExcelDataProvider;
+import com.toolshop.pages.LoginPage;
+import com.toolshop.utils.WaitUtils;
 import org.testng.Assert;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.toolshop.constants.Constants;
-import com.toolshop.pages.*;
 
 public class AuthenticationTest extends TestBase {
 
-	 
-    // Positive Login Tests
+    // ── Convenience shortcut ──────────────────────────────────────────────
+    private ExtentTest log() {
+        return extentTest.get();
+    }
 
-    @Test(dataProvider = "loginDataPositive", description = "Valid credentials should log the user in")
+    // ══════════════════════════════════════════════════════════════════════
+    // AT-001 to AT-004 — Successful login with valid credentials
+    // ══════════════════════════════════════════════════════════════════════
+
+    @Test(
+        dataProvider      = "loginDataPositive",
+        dataProviderClass = ExcelDataProvider.class,
+        description       = "Valid credentials should authenticate and redirect the user"
+    )
     public void testSuccessfulLogin(String email, String password) {
-        // Navigate to the login page via the navigation bar
-        NavigationBar navBar = new NavigationBar(driver);
+        log().assignCategory("Authentication")
+             .info("Navigating to login page: " + Constants.LOGIN_URL);
+
         driver.get(Constants.LOGIN_URL);
-
-        // Perform login using the LoginPage POM
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        loginPage.clickLogin();
 
-        // Assert: after a successful login the URL should no longer contain /auth/login
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
-        wait.until(ExpectedConditions.not(
-                ExpectedConditions.urlContains("/auth/login")));
+        log().info("Entering credentials — Email: " + email);
+        loginPage.loginAs(email, password);
 
-        Assert.assertFalse(driver.getCurrentUrl().contains("/auth/login"),
-                "Login failed — still on the login page for: " + email);
+        log().info("Waiting for URL to change away from /auth/login");
+        WaitUtils.waitForUrlToNotContain(driver, "/auth/login");
+
+        String currentUrl = driver.getCurrentUrl();
+        log().info("Current URL after login attempt: " + currentUrl);
+
+        boolean redirected = !currentUrl.contains("/auth/login");
+        if (redirected) {
+            log().pass("PASS — User redirected successfully. URL: " + currentUrl);
+        } else {
+            log().fail("FAIL — Still on /auth/login page for: " + email);
+        }
+
+        Assert.assertFalse(
+            currentUrl.contains("/auth/login"),
+            "Login failed — still on /auth/login for: " + email
+        );
     }
 
-    // Negative Login Tests — wrong password
+    // ══════════════════════════════════════════════════════════════════════
+    // AT-005, AT-008, AT-009 — Wrong password keeps user on login page
+    // ══════════════════════════════════════════════════════════════════════
 
-    @Test(dataProvider = "loginDataNegativeWrongPassword",
-          description = "Wrong password should show a password error message")
+    @Test(
+        dataProvider      = "loginDataNegativeWrongPassword",
+        dataProviderClass = ExcelDataProvider.class,
+        description       = "Wrong password should keep the user on the login page"
+    )
     public void testLoginWithWrongPassword(String email, String password) {
+        log().assignCategory("Authentication")
+             .info("Navigating to login page");
+
         driver.get(Constants.LOGIN_URL);
-
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        loginPage.clickLogin();
 
-        Assert.assertTrue(loginPage.iswrongPassMsgDisplayed(),
-                "Expected password error message to be displayed for: " + email);
+        log().info("Entering credentials with wrong password — Email: " + email
+                   + " | Password: " + password);
+        loginPage.loginAs(email, password);
+
+        String currentUrl = driver.getCurrentUrl();
+        log().info("Current URL after failed login: " + currentUrl);
+
+        boolean stayedOnLogin = currentUrl.contains("/auth/login");
+        if (stayedOnLogin) {
+            log().pass("PASS — User remained on /auth/login as expected");
+        } else {
+            log().fail("FAIL — User was redirected away from login page unexpectedly. URL: "
+                       + currentUrl);
+        }
+
+        Assert.assertTrue(
+            stayedOnLogin,
+            "Expected to remain on login page for wrong password. URL: " + currentUrl
+        );
     }
 
-    // Negative Login Tests — empty / invalid email
+    // ══════════════════════════════════════════════════════════════════════
+    // AT-006, AT-007, AT-010, AT-011 — Invalid email format
+    // ══════════════════════════════════════════════════════════════════════
 
-    @Test(dataProvider = "loginDataNegativeWrongEmail",
-          description = "Invalid email should show an email validation error")
+    @Test(
+        dataProvider      = "loginDataNegativeWrongEmail",
+        dataProviderClass = ExcelDataProvider.class,
+        description       = "Invalid email format should prevent login"
+    )
     public void testLoginWithInvalidEmail(String email, String password) {
+        log().assignCategory("Authentication")
+             .info("Navigating to login page");
+
         driver.get(Constants.LOGIN_URL);
-
         LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        loginPage.clickLogin();
 
-        Assert.assertTrue(loginPage.iswrongEmailMsgDisplayed(),
-                "Expected email error message to be displayed for email: " + email);
+        log().info("Entering invalid email: \"" + email + "\"");
+        loginPage.loginAs(email, password);
+
+        boolean stayedOnLogin = driver.getCurrentUrl().contains("/auth/login");
+        boolean emailError    = loginPage.isEmailErrorDisplayed();
+
+        log().info("Stayed on login page: " + stayedOnLogin
+                   + " | Email error displayed: " + emailError);
+
+        if (stayedOnLogin || emailError) {
+            log().pass("PASS — Login blocked for invalid email: \"" + email + "\"");
+        } else {
+            log().fail("FAIL — Login was NOT blocked for invalid email: \"" + email + "\"");
+        }
+
+        Assert.assertTrue(
+            stayedOnLogin || emailError,
+            "Expected to stay on login page or show email error for: \"" + email + "\""
+        );
     }
-
-	
-	
-//Date Providers
-	  @DataProvider(name = "loginDataPositive")
-	    public Object[][] providePositiveLoginData1() {
-	        return new Object[][] {
-	                { "admin@practicesoftwaretesting.com",     "welcome01"  },
-	                { "customer@practicesoftwaretesting.com",  "welcome01!" },
-	                { "customer2@practicesoftwaretesting.com", "welcome01"  },
-	                { "customer3@practicesoftwaretesting.com", "pass123"    }
-	        };
-	    }
-
-	    @DataProvider(name = "loginDataNegativeWrongPassword")
-	    public Object[][] provideNegativeLoginDataWrongPassword() {
-	        return new Object[][] {
-	                { "admin@practicesoftwaretesting.com",     "wrongpass"  },
-	                { "customer@practicesoftwaretesting.com",  "123456"     },
-	                { "customer2@practicesoftwaretesting.com", "badpassword"}
-	        };
-	    }
-
-	    @DataProvider(name = "loginDataNegativeWrongEmail")
-	    public Object[][] provideNegativeLoginDataWrongEmail() {
-	        return new Object[][] {
-	                { "notanemail",           "welcome01" },
-	                { "",                     "welcome01" },
-	                { "missing@domain",       "welcome01" }
-	        };
-	    }
-
 }

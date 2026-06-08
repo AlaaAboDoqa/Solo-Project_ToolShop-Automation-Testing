@@ -1,27 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
 <suite name="ToolShop Automation Suite" verbose="1">
 
-	<test name="Authentication Tests">
-		<classes>
-			<class name="com.toolshop.tests.AuthenticationTest">
-				<methods>
-					<include name="testSuccessfulLogin" />
-					<include name="testLoginWithWrongPassword" />
-					<include name="testLoginWithInvalidEmail" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <!-- TEST 1 — Authentication (AT-001 to AT-007) -->
+    <test name="Authentication Tests">
+        <classes>
+            <class name="com.toolshop.tests.AuthenticationTest">
+                <methods>
+                    <include name="testSuccessfulLogin" />
+                    <include name="testLoginWithWrongPassword" />
+                    <include name="testLoginWithInvalidEmail" />
+                </methods>
+            </class>
+        </classes>
+    </test>
 
-	<test name="Search and Navigation Tests">
-		<classes>
-			<class name="com.toolshop.tests.SearchTest">
-				<methods>
-					<include name="verifyProductSearchExecution" />
-					<include name="verifyHandToolsCategoryNavigation" />
-					<include name="verifyPowerToolsCategoryNavigation" />
-					<include name="verifyHomeNavigationFromCategoryPage" />
-				</methods>
-			</class>
-		</classes>
-	</test>
+    <!-- TEST 2 — Search and Navigation (ST-001 to ST-013) -->
+    <test name="Search and Navigation Tests">
+        <classes>
+            <class name="com.toolshop.tests.SearchTest">
+                <methods>
+                    <include name="verifyProductSearchExecution" />
+                    <include name="verifyHandToolsCategoryNavigation" />
+                    <include name="verifyPowerToolsCategoryNavigation" />
+                    <include name="verifyHomeNavigationFromCategoryPage" />
+                    <include name="verifySearchResultCardNameAndPrice" />
+                    <include name="verifySearchResultCardImageDisplayed" />
+                    <include name="verifyProductDetailMatchesSearchCard" />
+                    <include name="verifyAddToCartSuccessMessage" />
+                    <include name="verifyProductAppearsInCartAfterAddToCart" />
+                    <include name="verifyAddToFavoritesSuccessMessage" />
+                    <include name="verifyProductAppearsInFavoritesAfterAdd" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- TEST 3 — User Profile (UP-001 to UP-005) -->
+    <test name="User Profile Tests">
+        <classes>
+            <class name="com.toolshop.tests.UserProfileTest">
+                <methods>
+                    <include name="verifyProfilePageDisplaysCurrentDetails" />
+                    <include name="verifyProfileUpdateWithValidData" />
+                    <include name="verifyUpdatedNamePersistsAfterSave" />
+                    <include name="verifyBlankFirstNameShowsValidationError" />
+                    <include name="verifyBlankLastNameShowsValidationError" />
+                </methods>
+            </class>
+        </classes>
+    </test>
+
 </suite>

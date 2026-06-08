@@ -1,46 +1,54 @@
 package com.toolshop.pages;
+
+import com.toolshop.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage {
-private By passErrorMessage = By.xpath("//div[@id=\"password-error\"]");
-private By emailErrorMessage= By.xpath("//div[@id=\"email-error\"]");
-private By emailInput= By.id("email");
-private By passwordInput= By.id("password");
-private By LoginBtn= By.xpath("//input[@value='Login']");
-private WebDriver driver;
 
-//Constructor
-public LoginPage(WebDriver driver) {
-    this.driver = driver;
+    private final WebDriver driver;
+
+    private final By emailInput    = By.cssSelector("[data-test='email']");
+    private final By passwordInput = By.cssSelector("[data-test='password']");
+    private final By loginBtn      = By.cssSelector("[data-test='login-submit']");
+    private final By emailErrorMessage = By.cssSelector("[data-test='email-error']");
+    private final By passErrorMessage  = By.cssSelector("[data-test='login-error'], .alert-danger");
+
+    public LoginPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    public void login(String email, String password) {
+        WaitUtils.waitForVisible(driver, emailInput).clear();
+        driver.findElement(emailInput).sendKeys(email);
+        driver.findElement(passwordInput).clear();
+        driver.findElement(passwordInput).sendKeys(password);
+    }
+
+    public void clickLogin() {
+        WaitUtils.waitForClickable(driver, loginBtn).click();
+    }
+
+    public void loginAs(String email, String password) {
+        login(email, password);
+        clickLogin();
+    }
+
+    public boolean isEmailErrorDisplayed() {
+        try {
+            return WaitUtils.waitForVisible(driver, emailErrorMessage,
+                    WaitUtils.SHORT_WAIT_SEC).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isPasswordErrorDisplayed() {
+        try {
+            return WaitUtils.waitForVisible(driver, passErrorMessage,
+                    WaitUtils.SHORT_WAIT_SEC).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
-//Login Class to clear the inputs and enter the new values 
-public void login(String email, String password) {
-	driver.findElement(passwordInput).clear();
-	driver.findElement(passwordInput).sendKeys(password);
-	driver.findElement(emailInput).clear();
-	driver.findElement(emailInput).sendKeys(email);
-}
-	
-// Method to click the Login Button
-	public void clickLogin() {
-
-		driver.findElement(LoginBtn).click();
-
-	}
-	public boolean iswrongEmailMsgDisplayed() {
-		if(driver.findElement(emailErrorMessage).isDisplayed())
-		return true;
-		else
-			return false;
-	}
-	public boolean iswrongPassMsgDisplayed() {
-		if(driver.findElement(passErrorMessage).isDisplayed())
-		return true;
-		else
-			return false;
-	}
-
-}
-
-
