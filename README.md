@@ -4,6 +4,7 @@
 ![TestNG](https://img.shields.io/badge/Framework-TestNG-8A2BE2?style=for-the-badge&logo=testng&logoColor=white)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![Status](https://img.shields.io/badge/Project%20Status-Passing-brightgreen?style=for-the-badge)
+
 This repository contains the automated test suite for the **Tool Shop** e-commerce web application. The framework is designed using industry best practices to ensure high test coverage, reliability, and ease of maintenance.
 
 ---
