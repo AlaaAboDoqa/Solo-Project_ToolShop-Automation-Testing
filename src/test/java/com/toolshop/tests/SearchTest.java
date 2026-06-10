@@ -23,15 +23,15 @@ public class SearchTest extends TestBase {
         return extentTest.get();
     }
 
-//    //  Login 
-//    private void loginAsCustomer() {
-//        log().info("Logging in as customer: " + Constants.CUSTOMER_EMAIL);
-//        driver.get(Constants.LOGIN_URL);
-//        LoginPage loginPage = new LoginPage(driver);
-//        loginPage.loginAs(Constants.CUSTOMER_EMAIL, Constants.CUSTOMER_PASSWORD);
-//        WaitUtils.waitForUrlToNotContain(driver, "/auth/login");
-//        log().info("Login successful — URL: " + driver.getCurrentUrl());
-//    }
+    //  Login 
+    private void loginAsCustomer() {
+        log().info("Logging in as customer: " + Constants.NEW_CUSTOMER_EMAIL);
+        driver.get(Constants.LOGIN_URL);
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.loginAs(Constants.NEW_CUSTOMER_EMAIL, Constants.NEW_CUSTOMER_PASSWORD);
+        WaitUtils.waitForUrlToNotContain(driver, "/auth/login");
+        log().info("Login successful — URL: " + driver.getCurrentUrl());
+    }
 
     // ══════════════════════════════════════════════════════════════════════
     // ST-001 to ST-003 — Keyword search results heading
@@ -208,7 +208,7 @@ public class SearchTest extends TestBase {
         log().assignCategory("Product Card");
         log().info("Searching for keyword: \"" + keyword + "\"");
 
-        SearchPage searchPage = new SearchPage(driver);
+        SearchPage searchPage = new SearchPage(driver); 
         searchPage.searchFor(keyword);
 
         boolean imageDisplayed = searchPage.isFirstCardImageDisplayed();
@@ -252,7 +252,7 @@ public class SearchTest extends TestBase {
 
         // Read detail data
         String detailName  = searchPage.getDetailProductName();
-        String detailPrice = searchPage.getDetailUnitPrice();
+        String detailPrice = "$"+searchPage.getDetailUnitPrice();
         boolean imgVisible = searchPage.isDetailImageDisplayed();
         log().info("Detail page — Name: \"" + detailName
                    + "\" | Price: \"" + detailPrice
@@ -302,7 +302,7 @@ public class SearchTest extends TestBase {
     )
     public void verifyAddToCartSuccessMessage(String searchKeyword, String expectedProductName) {
         log().assignCategory("Cart");
-//        loginAsCustomer();
+        loginAsCustomer();
 
         driver.get(Constants.BASE_URL);
         SearchPage searchPage = new SearchPage(driver);
@@ -340,7 +340,7 @@ public class SearchTest extends TestBase {
     public void verifyProductAppearsInCartAfterAddToCart(String searchKeyword,
                                                          String expectedProductName) {
         log().assignCategory("Cart");
-//        loginAsCustomer();
+        loginAsCustomer();
 
         driver.get(Constants.BASE_URL);
         SearchPage searchPage = new SearchPage(driver);
@@ -385,7 +385,7 @@ public class SearchTest extends TestBase {
     public void verifyAddToFavoritesSuccessMessage(String searchKeyword,
                                                    String expectedProductName) {
         log().assignCategory("Favorites");
-//        loginAsCustomer();
+        loginAsCustomer();
 
         driver.get(Constants.BASE_URL);
         SearchPage searchPage = new SearchPage(driver);
@@ -424,7 +424,7 @@ public class SearchTest extends TestBase {
     public void verifyProductAppearsInFavoritesAfterAdd(String searchKeyword,
                                                         String expectedProductName) {
         log().assignCategory("Favorites");
-//        loginAsCustomer();
+        loginAsCustomer();
 
         driver.get(Constants.BASE_URL);
         SearchPage searchPage = new SearchPage(driver);

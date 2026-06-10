@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 public class AuthenticationTest extends TestBase {
 
-    // ── Convenience shortcut ──────────────────────────────────────────────
+    // Reporter
     private ExtentTest log() {
         return extentTest.get();
     }

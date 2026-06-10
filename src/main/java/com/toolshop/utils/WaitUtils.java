@@ -30,7 +30,7 @@ public class WaitUtils {
     public static final long LOGIN_REDIRECT_WAIT_SEC = 15;
 
     /** Wait for toast/snackbar notifications to appear. */
-    public static final long TOAST_WAIT_SEC          = 8;
+    public static final long TOAST_WAIT_SEC          = 2;
 
     public static WebElement waitForVisible(WebDriver driver, By locator) {
         return new WebDriverWait(driver, Duration.ofSeconds(DEFAULT_WAIT_SEC))

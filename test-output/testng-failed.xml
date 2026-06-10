@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="Default test(failed)">
+    <classes>
+      <class name="com.toolshop.tests.UserProfileTest">
+        <methods>
+          <include name="tearDown"/>
+          <include name="verifyProfilePageDisplaysCurrentDetails"/>
+          <include name="verifyProfileUpdateWithValidData" invocation-numbers="0 1"/>
+          <include name="tearDownReport"/>
+          <include name="verifyBlankFirstNameShowsValidationError"/>
+          <include name="verifyUpdatedNamePersistsAfterSave" invocation-numbers="0 1"/>
+          <include name="setUp"/>
+          <include name="setUpReport"/>
+          <include name="verifyBlankLastNameShowsValidationError"/>
+        </methods>
+      </class> <!-- com.toolshop.tests.UserProfileTest -->
+    </classes>
+  </test> <!-- Default test(failed) -->
+</suite> <!-- Failed suite [Default suite] -->

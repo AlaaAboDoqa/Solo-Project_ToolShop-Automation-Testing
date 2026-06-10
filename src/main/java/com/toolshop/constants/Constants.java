@@ -12,7 +12,7 @@ public class Constants {
     public static final String BASE_URL                   = "https://practicesoftwaretesting.com";
     public static final String LOGIN_URL                  = BASE_URL + "/auth/login";
     public static final String ACCOUNT_URL                = BASE_URL + "/account";
-    public static final String EDIT_PROFILE_URL                = BASE_URL + "/account";
+   public static final String EDIT_PROFILE_URL                = ACCOUNT_URL + "/profile";
 
     public static final String FAVORITES_URL              = BASE_URL + "/account/favorites";
     public static final String CART_URL                   = BASE_URL + "/checkout";
@@ -30,9 +30,13 @@ public class Constants {
     public static final String SHEET_LOGIN_NEG_EMAIL      = "LoginNegEmail";
     public static final String SHEET_SEARCH_KEYWORDS      = "SearchKeywords";
     public static final String SHEET_CART_PRODUCTS        = "CartProducts";
-//    public static final String SHEET_PROFILE_UPDATES      = "ProfileUpdates";
+    public static final String SHEET_PROFILE_UPDATES      = "ProfileUpdates";
 
     // ─── Shared Test Credentials (used for flows that require a login first) ──
+    public static final String NEW_CUSTOMER_EMAIL             = "user_test_2026_xyz@gmail.com";
+    public static final String NEW_CUSTOMER_PASSWORD          = "My-pass123";
+
+
     public static final String CUSTOMER_EMAIL             = "customer@practicesoftwaretesting.com";
     public static final String CUSTOMER_PASSWORD          = "welcome01";
 

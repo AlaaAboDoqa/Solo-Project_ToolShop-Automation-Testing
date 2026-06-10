@@ -4,7 +4,8 @@ import com.toolshop.utils.WaitUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 import java.util.List;
 
 public class SearchPage {
@@ -14,7 +15,8 @@ public class SearchPage {
     // ─── Search Bar ───────────────────────────────────────────────────────────
     private final By searchBox = By.id("search-query");
     private final By searchBtn = By.cssSelector("[data-test='search-submit']");
-    private final By searchResultsHeading = By.cssSelector("h3");
+    private final By searchResultsHeading = By.cssSelector("[data-test=\"search-caption\"]");
+    
     // ─── Product Cards ────────────────────────────────────────────────────────
     private final By allCards         = By.cssSelector(".card");
     private final By cardProductName  = By.cssSelector("[data-test='product-name']");
@@ -29,7 +31,6 @@ public class SearchPage {
     private final By addToFavoritesBtn  = By.cssSelector("[data-test='add-to-favorites']");
 
     // ─── Toast ────────────────────────────────────────────────────────────────
-    // FIX #2: الـ toast في الموقع بيستخدم ngb-toast — نحط الـ selector الأصح أول
     private final By toastBody      = By.cssSelector("ngb-toast .toast-body, .toast-body");
     private final By toastContainer = By.cssSelector("ngb-toast, .toast, [role='alert']");
 
@@ -43,12 +44,14 @@ public class SearchPage {
     public SearchPage(WebDriver driver) {
         this.driver = driver;
     }
-//============================================
+
+    // ─── Actions ─────────────────────────────────────────────────────────────
     
-// #Actions
     public void enterSearchKeyword(String keyword) {
-        WaitUtils.waitForVisible(driver, searchBox).clear();
-        driver.findElement(searchBox).sendKeys(keyword);
+        WebElement input = WaitUtils.waitForVisible(driver, searchBox);
+        WaitUtils.waitForClickable(driver, searchBox);
+        input.clear();
+        input.sendKeys(keyword);
     }
 
     public void clickSearch() {
@@ -60,13 +63,12 @@ public class SearchPage {
         clickSearch();
     }
 
-   
     public String getSearchResultsHeaderText() {
         return WaitUtils.waitForVisible(driver, searchResultsHeading,
                 WaitUtils.NAVIGATION_WAIT_SEC).getText();
     }
 
-    // ── Search Cards ──────────────────────────────────────────────────────────
+    // ─── Search Cards ──────────────────────────────────────────────────────────
 
     public WebElement getFirstResultCard() {
         WaitUtils.waitForVisible(driver, allCards, WaitUtils.NAVIGATION_WAIT_SEC);
@@ -78,10 +80,12 @@ public class SearchPage {
     }
 
     public String getFirstCardProductName() {
+        WaitUtils.waitForVisible(driver, cardProductName, WaitUtils.NAVIGATION_WAIT_SEC);
         return getFirstResultCard().findElement(cardProductName).getText().trim();
     }
 
     public String getFirstCardProductPrice() {
+        WaitUtils.waitForVisible(driver, cardProductPrice, WaitUtils.NAVIGATION_WAIT_SEC);
         return getFirstResultCard().findElement(cardProductPrice).getText().trim();
     }
 
@@ -108,7 +112,7 @@ public class SearchPage {
         cards.get(0).click();
     }
 
-    // Product Detail
+    // ─── Product Detail ───────────────────────────────────────────────────────
 
     public String getDetailProductName() {
         return WaitUtils.waitForVisible(driver, detailProductName,
@@ -153,23 +157,25 @@ public class SearchPage {
         WaitUtils.waitForClickable(driver, addToFavoritesBtn).click();
     }
 
-    // Toast
+    // ─── Toast ────────────────────────────────────────────────────────────────
 
     public String getToastMessage() {
         try {
-            return WaitUtils.waitForVisible(driver, toastBody,
-                    WaitUtils.TOAST_WAIT_SEC).getText().trim();
+            WebElement toast = WaitUtils.waitForVisible(driver, toastBody, WaitUtils.TOAST_WAIT_SEC);
+            new WebDriverWait(driver, Duration.ofSeconds(3)).until(d -> !toast.getText().trim().isEmpty());
+            return toast.getText().trim();
         } catch (Exception e) {
             try {
-                return WaitUtils.waitForVisible(driver, toastContainer,
-                        WaitUtils.TOAST_WAIT_SEC).getText().trim();
+                WebElement container = WaitUtils.waitForVisible(driver, toastContainer, WaitUtils.TOAST_WAIT_SEC);
+                new WebDriverWait(driver, Duration.ofSeconds(3)).until(d -> !container.getText().trim().isEmpty());
+                return container.getText().trim();
             } catch (Exception ex) {
                 return "";
             }
         }
     }
 
-    // Cart 
+    // ─── Cart ─────────────────────────────────────────────────────────────────
 
     public int getCartBadgeCount() {
         try {
@@ -188,7 +194,7 @@ public class SearchPage {
                 .anyMatch(el -> el.getText().trim().equalsIgnoreCase(expectedProductName));
     }
 
-    // ── Favorites ─────────────────────────────────────────────────────────────
+    // ─── Favorites ─────────────────────────────────────────────────────────────
 
     public boolean isProductInFavorites(String expectedProductName) {
         WaitUtils.waitForVisible(driver, favProductName, WaitUtils.NAVIGATION_WAIT_SEC);
